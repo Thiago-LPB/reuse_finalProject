@@ -1,0 +1,139 @@
+<% if (User) { %>
+  <%- include("partials/headerLogin.ejs") %>
+<% } else { %>
+  <%- include("partials/header.ejs") %>
+<% } %>
+
+<!-- Game Details Section -->
+<section class="py-5">
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-5">
+      <!-- Game Image -->
+      <div class="col-md-5 mb-5">
+        <img class="card-img-top img-fluid rounded shadow" src="/<%= game.img %>" alt="<%= game.name %>" style="max-height: 500px; object-fit: cover;">
+      </div>
+      
+      <!-- Game Info -->
+      <div class="col-md-7">
+        <h1 class="fw-bolder"><%= game.name %></h1>
+        <div class="mb-3">
+          <span class="badge bg-primary"><%= game.category %></span>
+          <% if (game.tags && Array.isArray(game.tags) && game.tags.length > 0) { %>
+            <% game.tags.forEach(tag => { %>
+              <% const tagName = typeof tag === 'object' ? tag.name : tag; %>
+              <span class="badge bg-secondary"><%= tagName %></span>
+            <% }) %>
+          <% } %>
+        </div>
+        
+        <!-- Rating -->
+        <% if (game.rating > 0) { %>
+          <% const rating = parseFloat(game.rating); %>
+          <div class="d-flex align-items-center mb-3">
+            <div class="d-flex text-warning me-2">
+              <% for(let i = 0; i < Math.floor(rating); i++) { %>
+                <i class="bi-star-fill"></i>
+              <% } %>
+              <% if (rating % 1 !== 0) { %>
+                <i class="bi-star-half"></i>
+              <% } %>
+            </div>
+            <span class="text-muted"><%= rating.toFixed(1) %> / 5.0</span>
+          </div>
+        <% } %>
+        
+        <!-- Price -->
+        <div class="fs-2 fw-bold text-primary mb-4">$<%= game.price %></div>
+        
+        <!-- Description -->
+        <p class="lead mb-4"><%= game.description || 'No description available.' %></p>
+        
+        <!-- Developer & Info -->
+        <div class="mb-4">
+          <p class="mb-1"><strong>Developer:</strong> <%= game.developer || 'Unknown' %></p>
+          <% if (game.release_date) { %>
+            <p class="mb-1"><strong>Release Date:</strong> <%= new Date(game.release_date).toLocaleDateString() %></p>
+          <% } %>
+          <p class="mb-1"><strong>Total Purchases:</strong> <%= game.total_purchases || 0 %></p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="d-grid gap-2 d-md-flex">
+          <% if (User) { %>
+            <% if (userOwnsGame) { %>
+              <button class="btn btn-success btn-lg disabled" disabled>
+                <i class="bi bi-check-circle-fill"></i> Already Owned
+              </button>
+            <% } else { %>
+              <form action="/cart/add/<%= game.id %>" method="POST" style="display:inline;">
+                <button class="btn btn-primary btn-lg" type="submit">
+                  <i class="bi-cart-fill"></i> Add to Cart
+                </button>
+              </form>
+            <% } %>
+          <% } else { %>
+            <a href="/" class="btn btn-primary btn-lg">
+              <i class="bi-lock-fill"></i> Login to Purchase
+            </a>
+          <% } %>
+          <a href="/games" class="btn btn-outline-secondary btn-lg">
+            <i class="bi-arrow-left"></i> Back to Catalog
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Reviews Section -->
+    <% if (game.reviews && game.reviews.length > 0) { %>
+      <div class="row mt-5">
+        <div class="col-12">
+          <h3 class="fw-bold mb-4">Reviews</h3>
+          <% game.reviews.forEach(review => { %>
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h6 class="fw-bold"><%= review.user_email %></h6>
+                    <div class="text-warning mb-2">
+                      <% for(let i = 0; i < review.rating; i++) { %>
+                        <i class="bi-star-fill"></i>
+                      <% } %>
+                    </div>
+                  </div>
+                  <small class="text-muted"><%= new Date(review.created_at).toLocaleDateString() %></small>
+                </div>
+                <p class="mb-0"><%= review.comment %></p>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+    
+    <!-- Similar Games -->
+    <% if (similar && similar.length > 0) { %>
+      <div class="row mt-5">
+        <div class="col-12">
+          <h3 class="fw-bold mb-4">Similar Games</h3>
+          <div class="row gx-4 gx-lg-5">
+            <% similar.forEach(simGame => { %>
+              <div class="col-md-2 col-sm-4 col-6 mb-4">
+                <div class="card h-100">
+                  <a href="/game/<%= simGame.id %>">
+                    <img class="card-img-top" src="/<%= simGame.img %>" alt="<%= simGame.name %>" style="height:120px; object-fit: cover;">
+                  </a>
+                  <div class="card-body p-2">
+                    <h6 class="small fw-bold text-truncate"><%= simGame.name %></h6>
+                    <p class="small text-primary fw-bold mb-0">$<%= simGame.price %></p>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include("partials/footer.ejs") %>

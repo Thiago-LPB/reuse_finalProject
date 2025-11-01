@@ -1,0 +1,73 @@
+<%- include("partials/header.ejs") %>
+
+<link href="css/signUpStyles.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+<form method="post" action="/signUp">
+
+<div id="grid-container">
+    <div class="flex-column">
+<div class="flex-row">
+    <div class="label-box">
+        <label for="email">Email</label>
+    </div>
+    
+    <input type="text" name="email" placeholder="example@email.com"  class="form-control" format="email" required>
+</div>
+<div class="flex-row">
+    <div class="label-box">
+        <label for="password">Password</label>
+    </div>
+    
+    <input type="password" id="password" name="password" class="form-control" placeholder="password" required>
+</div>
+<div class="flex-row">
+    <div class="label-box">
+        <label for="confirm-password">Confirm Password</label>
+    </div>
+    
+    <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="password" required>
+
+</div>
+<div class="flex-row flex-row-confirm">
+    <div class="label-box"></div>
+    
+    <div id="flex-requisits">
+        <div class="flex-check">
+            <i class="material-icons" id="i-lower" style="font-size:18px"></i>
+            <label class="lower"></label>
+        </div>
+        <div class="flex-check">
+            <i class="material-icons" id="i-upper" style="font-size:18px"></i>
+            <label class="upper"></label>
+        </div>
+        <div class="flex-check">
+            <i class="material-icons" id="i-number" style="font-size:18px"></i>
+            <label class="number"></label>
+        </div>
+        <div class="flex-check">
+            <i class="material-icons" id="i-special" style="font-size:18px"></i>
+            <label class="special"></label>
+        </div>
+        <div class="flex-check">
+            <i class="material-icons" id="i-size" style="font-size:18px"></i>
+            <label class="size"></label>
+        </div>
+        <div class="flex-check">
+            <i class="material-icons" id="i-match" style="font-size:18px"></i>
+            <label class="match"></label>
+        </div>
+    </div>
+
+</div>
+</div>    
+
+<div class="grid-bt"><input type="submit" name="signUp" class="btn btn-primary" value="Submit"></div>
+
+
+</div>
+
+</form>
+
+<%- include("partials/footer.ejs") %>

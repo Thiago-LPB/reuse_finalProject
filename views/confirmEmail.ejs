@@ -1,0 +1,20 @@
+<%- include("partials/header.ejs") %>
+<link href="css/signUpStyles.css" rel="stylesheet" />
+
+<form method="post" action="/confirmEmail">
+<div class="flex-column" style="height: 90vh">
+        <div>
+        <h2>Confirme o email com o código recebido em <%= email %></h2>      
+        </div>
+        <input type="text" name="confirm-email" class="form-control" required style="max-width:300px">
+        <div>
+        <input type="submit" name="verifCode" class="btn btn-primary" value="submit">
+        </div>
+</div>     
+<input type="hidden" name="email" value="<%= email %>">
+<input type="hidden" name="password" value="<%= password %>">
+<input type="hidden" name="key" value="<%= key %>">
+</form>
+
+
+<%- include("partials/footer.ejs") %>

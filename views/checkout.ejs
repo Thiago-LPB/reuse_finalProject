@@ -1,0 +1,146 @@
+<%- include("partials/headerLogin.ejs") %>
+
+<section class="py-5" style="background-color: #f5f6fa; min-height: 100vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+
+      <!-- 🛒 Lista de itens -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h2 class="fw-bold mb-4">🛒 Checkout</h2>
+
+            <% if (cart.length > 0) { %>
+              <% cart.forEach((item) => { %>
+                <div class="row align-items-center border-bottom py-3">
+                  <div class="col-md-2 col-4">
+                    <img src="<%= item.img %>" class="img-fluid rounded-3 shadow-sm" alt="<%= item.name %>">
+                  </div>
+                  <div class="col-md-6 col-8">
+                    <h5 class="fw-semibold mb-1"><%= item.name %></h5>
+                    <p class="text-muted mb-0">Digital Game</p>
+                  </div>
+                  <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                    <h5 class="text-success fw-bold mb-0">$<%= item.price %></h5>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="text-center py-5">
+                <h3 class="fw-bold text-muted">Your cart is empty</h3>
+                <form action="/" method="get">
+                  <button class="btn btn-dark mt-3" type="submit">Go Back to Shop</button>
+                </form>
+              </div>
+            <% } %>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 💳 Sidebar resumo da compra -->
+      <div class="col-lg-4">
+        <div class="card shadow-lg rounded-4 sticky-top" style="top: 90px;">
+          <div class="card-body p-4">
+            <h3 class="fw-bold mb-4 text-dark">Order Summary</h3>
+            <hr>
+
+            <div class="d-flex justify-content-between mb-3">
+              <span class="fw-semibold">Items</span>
+              <span><%= cart.length %></span>
+            </div>
+
+            <div class="d-flex justify-content-between mb-3">
+              <span class="fw-semibold">Account Balance</span>
+              <span class="text-primary fw-bold">$<%= money %></span>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="fw-bold mb-0">Total:</h5>
+              <h4 class="fw-bold text-success mb-0">$<%= cartPrice %></h4>
+            </div>
+
+            <% if (locals.message) { %>
+              <div class="alert alert-success rounded-3 mb-3">
+                <i class="fas fa-check-circle me-2"></i><%= message %>
+              </div>
+            <% } %>
+            <% if (locals.error) { %>
+              <div class="alert alert-danger rounded-3 mb-3">
+                <i class="fas fa-exclamation-triangle me-2"></i><%= error %>
+              </div>
+            <% } %>
+
+            <!-- 🔹 Seleção de Método de Pagamento -->
+            <ul class="nav nav-tabs mb-3" id="paymentTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="card-tab" data-bs-toggle="tab" data-bs-target="#card" type="button" role="tab">Credit Card</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pix-tab" data-bs-toggle="tab" data-bs-target="#pix" type="button" role="tab">PIX</button>
+              </li>
+            </ul>
+
+            <div class="tab-content mb-3" id="paymentTabContent">
+              <!-- Cartão -->
+              <div class="tab-pane fade show active" id="card" role="tabpanel">
+                <form action="/cart/confirm" method="POST">
+                  <input type="hidden" name="paymentMethod" value="card">
+                  <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Card Number" required>
+                  </div>
+                  <div class="mb-2">
+                    <input type="text" class="form-control" placeholder="Card Holder" required>
+                  </div>
+                  <div class="row">
+                    <div class="col-6 mb-2">
+                      <input type="text" class="form-control" placeholder="MM/YY" required>
+                    </div>
+                    <div class="col-6 mb-2">
+                      <input type="text" class="form-control" placeholder="CVV" required>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold mt-2">
+                    <i class="fas fa-credit-card me-2"></i>Pay with Card
+                  </button>
+                </form>
+              </div>
+
+              <!-- PIX -->
+              <div class="tab-pane fade" id="pix" role="tabpanel">
+                <div class="mb-3">
+                  <p>Use your PIX key to complete the payment:</p>
+                  <input type="text" class="form-control" value="123.456.789-00" readonly>
+                  <small class="text-muted">Copy this key to your bank app</small>
+                </div>
+                <form action="/cart/confirm" method="POST">
+                  <input type="hidden" name="paymentMethod" value="pix">
+                  <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
+                    <i class="fas fa-qrcode me-2"></i>Pay with PIX
+                  </button>
+                </form>
+              </div>
+
+              <!-- Boleto -->
+              <div class="tab-pane fade" id="boleto" role="tabpanel">
+                <p>Generate your boleto and pay at any bank or app:</p>
+                <form action="/cart/confirm" method="POST">
+                  <input type="hidden" name="paymentMethod" value="boleto">
+                  <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
+                    <i class="fas fa-barcode me-2"></i>Generate Boleto
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<%- include("partials/footer.ejs") %>

@@ -1,0 +1,33 @@
+<%- include("partials/headerLogin.ejs") %>
+
+<section class="py-5" style="background-color: #f5f6fa; min-height: 100vh;">
+  <div class="container">
+    <h2 class="fw-bold mb-4">🎮 My Games</h2>
+
+    <% if (gamesOwned.length > 0) { %>
+      <div class="row g-4">
+        <% gamesOwned.forEach((game) => { %>
+          <div class="col-md-4 col-sm-6">
+            <div class="card shadow-sm rounded-4 h-100">
+              <img src="<%= game.img %>" class="card-img-top rounded-top-4" alt="<%= game.name %>">
+              <div class="card-body">
+                <h5 class="card-title fw-bold"><%= game.name %></h5>
+                <p class="card-text text-success fw-semibold">$<%= game.price %></p>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="text-center py-5">
+        <h3 class="fw-bold text-muted">You have no purchased games yet</h3>
+        <form action="/" method="get">
+          <input type="hidden" name="loggedUser" value="<%= User %>">
+          <button class="btn btn-dark mt-3" href="/">Go Back to Shop</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include("partials/footer.ejs") %>

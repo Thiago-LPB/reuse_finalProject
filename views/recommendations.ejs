@@ -1,0 +1,161 @@
+<%- include("partials/headerLogin.ejs") %>
+
+<!-- Recommendations Header -->
+<section class="py-4 bg-light">
+  <div class="container">
+    <h1 class="fw-bolder mb-3">
+      <i class="bi bi-star-fill text-warning"></i> Recommended For You
+    </h1>
+    <p class="lead mb-0">Games specially selected based on your preferences and gaming history</p>
+  </div>
+</section>
+
+<!-- User Stats Section -->
+<section class="py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-6 mb-3">
+        <div class="card text-center bg-primary text-white">
+          <div class="card-body">
+            <h3 class="fw-bold mb-0"><%= stats.totalGames %></h3>
+            <p class="small mb-0">Games Owned</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6 mb-3">
+        <div class="card text-center bg-success text-white">
+          <div class="card-body">
+            <h3 class="fw-bold mb-0">$<%= stats.totalSpent.toFixed(2) %></h3>
+            <p class="small mb-0">Total Spent</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Favorite Categories</h6>
+            <% if (stats.favoriteCategories.length > 0) { %>
+              <div class="d-flex flex-wrap gap-2">
+                <% stats.favoriteCategories.forEach(cat => { %>
+                  <span class="badge bg-primary">
+                    <%= cat.name %> (<%= cat.count %>)
+                  </span>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="text-muted small mb-0">Start playing games to see your favorite categories!</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Favorite Tags -->
+    <% if (stats.favoriteTags.length > 0) { %>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h6 class="fw-bold mb-3">Your Gaming Style</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <% stats.favoriteTags.forEach(tag => { %>
+              <span class="badge bg-secondary">
+                <%= tag.name %> (<%= tag.count %>)
+              </span>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Recommended Games Section -->
+<section class="py-4">
+  <div class="container px-4 px-lg-5">
+    <h3 class="fw-bolder mb-4">
+      <i class="bi bi-magic"></i> Personalized Recommendations
+      <span class="badge bg-secondary"><%= recommendations.length %></span>
+    </h3>
+    
+    <% if (recommendations.length === 0) { %>
+      <div class="alert alert-info">
+        <h5><i class="bi bi-info-circle"></i> No recommendations yet!</h5>
+        <p class="mb-0">
+          Purchase and play more games to get personalized recommendations based on your preferences.
+          <a href="/games" class="alert-link">Browse our catalog</a> to get started!
+        </p>
+      </div>
+    <% } else { %>
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
+        <% recommendations.forEach(game => { %>
+          <div class="col mb-5">
+            <div class="card h-100">
+              <!-- Product image -->
+              <a href="/game/<%= game.id %>">
+                <img class="card-img-top" src="/<%= game.img %>" alt="<%= game.name %>" style="height:165px; object-fit: cover;">
+              </a>
+              
+              <!-- Badge for highly relevant games -->
+              <% if (game.relevance_score >= 5) { %>
+                <div class="badge bg-warning text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">
+                  <i class="bi bi-star-fill"></i> Perfect Match
+                </div>
+              <% } else if (game.relevance_score >= 3) { %>
+                <div class="badge bg-info text-dark position-absolute" style="top: 0.5rem; right: 0.5rem">
+                  Recommended
+                </div>
+              <% } %>
+              
+              <!-- Product details -->
+              <div class="card-body p-4">
+                <div class="text-center">
+                  <h5 class="fw-bolder"><%= game.name %></h5>
+                  <p class="text-muted small mb-2"><%= game.category || 'Uncategorized' %></p>
+                  
+                  <!-- Rating -->
+                  <% if (game.rating > 0) { %>
+                    <% const rating = parseFloat(game.rating); %>
+                    <div class="d-flex justify-content-center small text-warning mb-2">
+                      <% for(let i = 0; i < Math.floor(rating); i++) { %>
+                        <i class="bi-star-fill"></i>
+                      <% } %>
+                      <% if (rating % 1 !== 0) { %>
+                        <i class="bi-star-half"></i>
+                      <% } %>
+                      <span class="text-muted ms-1">(<%= rating.toFixed(1) %>)</span>
+                    </div>
+                  <% } %>
+                  
+                  <!-- Price -->
+                  <div class="fw-bold text-primary">$<%= game.price %></div>
+                </div>
+              </div>
+              
+              <!-- Product actions -->
+              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div class="text-center">
+                  <a class="btn btn-outline-primary btn-sm w-100 mb-2" href="/game/<%= game.id %>">
+                    View Details
+                  </a>
+                  <form action="/cart/add/<%= game.id %>" method="POST">
+                    <button class="btn btn-primary btn-sm w-100" type="submit">
+                      <i class="bi-cart-plus"></i> Add to Cart
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+    
+    <!-- Browse more games CTA -->
+    <div class="text-center mt-4">
+      <a href="/games" class="btn btn-outline-primary btn-lg">
+        <i class="bi bi-grid-3x3-gap-fill"></i> Browse All Games
+      </a>
+    </div>
+  </div>
+</section>
+
+<%- include("partials/footer.ejs") %>
